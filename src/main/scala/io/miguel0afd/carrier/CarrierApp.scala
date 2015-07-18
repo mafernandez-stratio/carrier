@@ -23,12 +23,15 @@ package io.miguel0afd.carrier
 
 import org.apache.ignite.{IgniteCache, IgniteCluster, Ignition, Ignite}
 
+case class Fruit(name: String, origin: String)
+
 object CarrierApp extends App {
   val ignite: Ignite = Ignition.ignite
   val cluster: IgniteCluster = ignite.cluster
 
-  // Obtain instance of cache named "myCache".
+  // Obtain instance of cache named "fruits".
   // Note that different caches may have different generics.
-  val cache: IgniteCache[Integer, String] = ignite.cache("myCache")
-  cache.put("One".hashCode, "1")
+  val cache: IgniteCache[String, Fruit] = ignite.cache("fruits")
+  val fruit: Fruit = Fruit("Durian", "Indonesia")
+  cache.put(fruit.name, fruit)
 }
