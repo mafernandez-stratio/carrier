@@ -28,7 +28,7 @@ import org.apache.ignite.configuration.IgniteConfiguration
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi
 import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder
-import org.apache.ignite.{IgniteCache, IgniteCluster, Ignition, Ignite}
+import org.apache.ignite._
 import scala.collection.JavaConversions._
 
 case class Fruit(name: String, origin: String)
