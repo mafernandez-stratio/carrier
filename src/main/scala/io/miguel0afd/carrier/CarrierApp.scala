@@ -26,6 +26,7 @@ import java.util
 import org.apache.ignite.cache.CachePeekMode
 import org.apache.ignite.configuration.IgniteConfiguration
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi
+import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder
 import org.apache.ignite.{IgniteCache, IgniteCluster, Ignition, Ignite}
 import scala.collection.JavaConversions._
@@ -36,20 +37,17 @@ object CarrierApp extends App {
 
   //System.setProperty("IGNITE_QUIET", "false");
 
-  /*
-  val config: IgniteConfiguration = new IgniteConfiguration
   val discoverySpi: TcpDiscoverySpi = new TcpDiscoverySpi
-  val ipFinder: TcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder
-  val addresses: util.HashSet[String] = new util.HashSet[String]
-  addresses.add("127.0.0.1:47500..47509")
-  ipFinder.setAddresses(addresses)
+  val ipFinder: TcpDiscoveryMulticastIpFinder = new TcpDiscoveryMulticastIpFinder
+  ipFinder.setMulticastGroup("228.10.10.157")
+  ipFinder.setAddresses(util.Arrays.asList("127.0.0.1:47500..47509"))
   discoverySpi.setIpFinder(ipFinder)
+  val config: IgniteConfiguration = new IgniteConfiguration
   config.setDiscoverySpi(discoverySpi)
   val ignite: Ignite = Ignition.start(config)
-  */
 
   //val ignite: Ignite = Ignition.start("src/resources/ignite-config.xml")
-  val ignite: Ignite = Ignition.start("src/resources/ignite-config2.xml")
+  //val ignite: Ignite = Ignition.start("src/resources/ignite-config2.xml")
   //ignite.cluster().localNode().attributes().entrySet().foreach(println)
   println("Local Port: " + ignite.cluster().localNode().attributes().get("TcpCommunicationSpi.comm.tcp.port"))
 
