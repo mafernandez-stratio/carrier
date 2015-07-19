@@ -28,12 +28,13 @@ import org.apache.ignite.configuration.IgniteConfiguration
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder
 import org.apache.ignite.{IgniteCache, IgniteCluster, Ignition, Ignite}
+import scala.collection.JavaConversions._
 
 case class Fruit(name: String, origin: String)
 
 object CarrierApp extends App {
 
-  System.setProperty("IGNITE_QUIET", "false");
+  //System.setProperty("IGNITE_QUIET", "false");
 
   /*
   val config: IgniteConfiguration = new IgniteConfiguration
@@ -47,8 +48,12 @@ object CarrierApp extends App {
   val ignite: Ignite = Ignition.start(config)
   */
 
+  //val ignite: Ignite = Ignition.start("src/resources/ignite-config.xml")
   val ignite: Ignite = Ignition.start("src/resources/ignite-config.xml")
-  val cluster: IgniteCluster = ignite.cluster
+  //ignite.cluster().localNode().attributes().entrySet().foreach(println)
+  println("Local Port: " + ignite.cluster().localNode().attributes().get("TcpCommunicationSpi.comm.tcp.port"))
+
+  //val cluster: IgniteCluster = ignite.cluster
 
   // Obtain instance of cache named "fruits".
   // Note that different caches may have different generics.
