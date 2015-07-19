@@ -21,22 +21,52 @@
 
 package io.miguel0afd.carrier
 
+import java.util
+
+import org.apache.ignite.cache.CachePeekMode
 import org.apache.ignite.configuration.IgniteConfiguration
+import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi
+import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder
 import org.apache.ignite.{IgniteCache, IgniteCluster, Ignition, Ignite}
 
 case class Fruit(name: String, origin: String)
 
 object CarrierApp extends App {
+
+  System.setProperty("IGNITE_QUIET", "false");
+
+  /*
   val config: IgniteConfiguration = new IgniteConfiguration
+  val discoverySpi: TcpDiscoverySpi = new TcpDiscoverySpi
+  val ipFinder: TcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder
+  val addresses: util.HashSet[String] = new util.HashSet[String]
+  addresses.add("127.0.0.1:47500..47509")
+  ipFinder.setAddresses(addresses)
+  discoverySpi.setIpFinder(ipFinder)
+  config.setDiscoverySpi(discoverySpi)
   val ignite: Ignite = Ignition.start(config)
+  */
+
+  val ignite: Ignite = Ignition.start("src/resources/ignite-config.xml")
   val cluster: IgniteCluster = ignite.cluster
 
   // Obtain instance of cache named "fruits".
   // Note that different caches may have different generics.
   val cache: IgniteCache[String, Fruit] = ignite.getOrCreateCache("fruits")
-  val fruit: Fruit = Fruit("Durian", "Indonesia")
-  cache.put(fruit.name, fruit)
-  val result: Fruit = cache.get(fruit.name)
-  println(result.name)
-  ignite.close
+  if(cache.size(CachePeekMode.ALL) < 1){
+    val fruit: Fruit = Fruit("Durian", "Indonesia")
+    cache.put(fruit.name, fruit)
+    val result: Fruit = cache.get(fruit.name)
+    println(result.name + " - " + result.origin)
+  } else {
+    val fruit: Fruit = Fruit("Mango", "India")
+    cache.put(fruit.name, fruit)
+    println("Cache size: " + cache.size(CachePeekMode.PRIMARY))
+    val result1: Fruit = cache.get("Durian")
+    println(result1.name + " - " + result1.origin)
+    val result2: Fruit = cache.get("Mango")
+    println(result2.name + " - " + result2.origin)
+  }
+
+  //ignite.close
 }
