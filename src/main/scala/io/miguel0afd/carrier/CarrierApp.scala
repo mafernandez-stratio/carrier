@@ -49,7 +49,7 @@ object CarrierApp extends App {
   */
 
   //val ignite: Ignite = Ignition.start("src/resources/ignite-config.xml")
-  val ignite: Ignite = Ignition.start("src/resources/ignite-config.xml")
+  val ignite: Ignite = Ignition.start("src/resources/ignite-config2.xml")
   //ignite.cluster().localNode().attributes().entrySet().foreach(println)
   println("Local Port: " + ignite.cluster().localNode().attributes().get("TcpCommunicationSpi.comm.tcp.port"))
 
