@@ -22,9 +22,10 @@
 package io.miguel0afd.carrier
 
 import java.util
+import javax.cache.configuration.FactoryBuilder
 
 import org.apache.ignite.cache.CachePeekMode
-import org.apache.ignite.configuration.IgniteConfiguration
+import org.apache.ignite.configuration.{CacheConfiguration, IgniteConfiguration}
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi
 import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder
@@ -37,6 +38,7 @@ object CarrierApp extends App {
 
   //System.setProperty("IGNITE_QUIET", "false");
 
+  // Distributed environment
   val discoverySpi: TcpDiscoverySpi = new TcpDiscoverySpi
   val ipFinder: TcpDiscoveryMulticastIpFinder = new TcpDiscoveryMulticastIpFinder
   ipFinder.setMulticastGroup("228.10.10.157")
@@ -44,7 +46,18 @@ object CarrierApp extends App {
   discoverySpi.setIpFinder(ipFinder)
   val config: IgniteConfiguration = new IgniteConfiguration
   config.setDiscoverySpi(discoverySpi)
+
+  // Persistence
+  val cacheConfig: CacheConfiguration[String, Fruit] = new CacheConfiguration[String, Fruit]()
+  val fp: FakePersistence = new FakePersistence
+  cacheConfig.setCacheStoreFactory(FactoryBuilder.factoryOf(fp.getClass))
+  cacheConfig.setReadThrough(true)
+  cacheConfig.setWriteThrough(true)
+  config.setCacheConfiguration(cacheConfig)
+
   val ignite: Ignite = Ignition.start(config)
+
+  val cc = ignite.configuration.getCacheConfiguration
 
   //val ignite: Ignite = Ignition.start("src/resources/ignite-config.xml")
   //val ignite: Ignite = Ignition.start("src/resources/ignite-config2.xml")
